@@ -1,6 +1,6 @@
 {
-  "name": "eslint-test-comments",
-  "description": "",
+  "name": "eslint-plugin-test-comments",
+  "description": "Enforces BDD style comments in your JavaScript tests! (given/when/then)",
   "license": "MIT",
   "version": "1.0.0",
   "main": "dist/index.js",
