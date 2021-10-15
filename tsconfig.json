@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2019", "es6"],
+    "module": "commonjs",
+    "outDir": "./dist",
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es6",
+    "noImplicitAny": false
+  },
+  "include": ["./package.json", "./src/**/*.ts"],
+  "exclude": ["./src/**/__tests__/*.ts"]
+}
