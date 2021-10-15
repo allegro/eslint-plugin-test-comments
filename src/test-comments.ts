@@ -103,10 +103,15 @@ export const getSuccessors = (
   }
 };
 
-type Messages = 'errorWrongOrder' | 'errorStartWithAnd';
+type Messages = 'errorWrongOrder' | 'errorStartWithAnd' | 'errorNoTestComments';
+type Options = [
+  {
+    allowNoComments: boolean;
+  }
+];
 
 const createRule = ESLintUtils.RuleCreator(() => '');
-export const testCommentsRule = createRule<[], Messages>({
+export const testCommentsRule = createRule<Options, Messages>({
   name: 'test-comments',
   meta: {
     type: 'suggestion',
@@ -118,21 +123,36 @@ export const testCommentsRule = createRule<[], Messages>({
       errorWrongOrder:
         "'{{wrongType}}' is not allowed here; instead, use one of: [{{correctTypes}}]",
       errorStartWithAnd: 'Test cannot start with AND.',
+      errorNoTestComments: 'Test does not contain any BDD comments',
     },
     schema: [
       {
-        additionalProperties: false,
         type: 'object',
+        additionalProperties: false,
+        properties: {
+          allowNoComments: { type: 'boolean' },
+        },
       },
     ],
   },
-  defaultOptions: [],
-  create: (context) => {
+  defaultOptions: [
+    {
+      allowNoComments: false,
+    },
+  ],
+  create: (context, [options]) => {
     const checkCommentsOrder = (node: TSESTree.CallExpression) => {
       const comments = context
         .getSourceCode()
         .getCommentsInside(node)
         .filter(fromSourceCodeComment);
+
+      if (!options.allowNoComments && comments.length === 0) {
+        context.report({
+          node,
+          messageId: 'errorNoTestComments',
+        });
+      }
 
       comments.some((comment, index) => {
         const nextComment = comments[index + 1];

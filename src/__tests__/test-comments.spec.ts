@@ -1,7 +1,7 @@
-import { defaultRuleTester } from './testUtils';
+import { defaultRuleTester, withOptions } from './testUtils';
 import {
-  TestComments,
   getSuccessors,
+  TestComments,
   testCommentsRule as rule,
 } from '../test-comments';
 
@@ -33,13 +33,25 @@ const valid = [
   },
   {
     code: `
+    test.each\`
+        var1 | var2
+        val1 | val2
+    \`('test', () => {
+        // when
+        const wrapper = wrapper;
+        // then
+        expect(true);
+    });
+    `,
+  },
+  {
+    code: `
     it('test', () => {
         // then
         // and
         // then
     });
     `,
-    errors: [buildMessage(TestComments.THEN, TestComments.THEN)],
   },
   {
     code: `
@@ -169,6 +181,16 @@ const valid = [
     });
     `,
   },
+  {
+    code: `
+    it.todo('test', () => {});
+    `,
+  },
+  withOptions({ allowNoComments: true })({
+    code: `
+    it('test', () => {});
+    `,
+  }),
 ];
 
 const invalid = [
@@ -265,11 +287,25 @@ const invalid = [
     `,
     errors: [buildMessage(TestComments.WHEN, TestComments.WHEN)],
   },
+  {
+    code: `
+    it('test', () => {});
+    `,
+    errors: ['Test does not contain any BDD comments'],
+  },
+  {
+    code: `
+    it('test', () => {
+      // notgiven
+    });
+    `,
+    errors: ['Test does not contain any BDD comments'],
+  },
 ];
 
 describe('test-comments', () => {
   describe('should pass valid syntax', () => {
-    ruleTester.run('lib/rules/test-comments', rule, {
+    ruleTester.run('src/rules/test-comments', rule, {
       valid: valid,
       invalid: [],
     });
