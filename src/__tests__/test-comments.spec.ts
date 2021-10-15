@@ -1,13 +1,20 @@
 import { defaultRuleTester } from './testUtils';
-import { TestComments, getSuccessors, testCommentsRule as rule } from '../test-comments';
+import {
+  TestComments,
+  getSuccessors,
+  testCommentsRule as rule,
+} from '../test-comments';
 
 const ruleTester = defaultRuleTester();
 
-const buildMessage = (predecessor: TestComments, wrongType: TestComments): string => {
+const buildMessage = (
+  predecessor: TestComments,
+  wrongType: TestComments
+): string => {
   const comment = { value: `${predecessor}` };
-  return `'${wrongType}' is not allowed here; instead, use one of: [${getSuccessors(comment as any).join(
-    ', '
-  )}]`;
+  return `'${wrongType}' is not allowed here; instead, use one of: [${getSuccessors(
+    comment as any
+  ).join(', ')}]`;
 };
 
 const valid = [

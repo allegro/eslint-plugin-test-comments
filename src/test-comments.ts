@@ -1,7 +1,6 @@
 import { TSESTree } from '@typescript-eslint/experimental-utils/dist/ts-estree';
 import { ESLintUtils } from '@typescript-eslint/experimental-utils';
 
-
 export const getMessageId = (correctComments: TestComments[]): Messages => {
   if (correctComments.length === 0) return 'errorStartWithAnd';
   return 'errorWrongOrder';
@@ -30,12 +29,22 @@ const allTestComments: TestComments[] = [
   TestComments.TEST_END,
 ];
 
-const isTestComment = (testComment: TestComments, comment?: TSESTree.Comment) => {
-  return comment?.value.toLowerCase().trimStart().startsWith(testComment.toLocaleString().toLowerCase());
+const isTestComment = (
+  testComment: TestComments,
+  comment?: TSESTree.Comment
+) => {
+  return comment?.value
+    .toLowerCase()
+    .trimStart()
+    .startsWith(testComment.toLocaleString().toLowerCase());
 };
 
-const fromSourceCodeComment = (comment: TSESTree.Comment): TestComments | undefined => {
-  return allTestComments.find((testComment) => isTestComment(testComment, comment));
+const fromSourceCodeComment = (
+  comment: TSESTree.Comment
+): TestComments | undefined => {
+  return allTestComments.find((testComment) =>
+    isTestComment(testComment, comment)
+  );
 };
 
 export const getSuccessors = (
@@ -103,10 +112,11 @@ export const testCommentsRule = createRule<[], Messages>({
     type: 'suggestion',
     docs: {
       description: 'Proper order of given/when/then comments in test files',
-      recommended: false,
+      recommended: 'error',
     },
     messages: {
-      errorWrongOrder: "'{{wrongType}}' is not allowed here; instead, use one of: [{{correctTypes}}]",
+      errorWrongOrder:
+        "'{{wrongType}}' is not allowed here; instead, use one of: [{{correctTypes}}]",
       errorStartWithAnd: 'Test cannot start with AND.',
     },
     schema: [
@@ -119,16 +129,21 @@ export const testCommentsRule = createRule<[], Messages>({
   defaultOptions: [],
   create: (context) => {
     const checkCommentsOrder = (node: TSESTree.CallExpression) => {
-      const comments = context.getSourceCode().getCommentsInside(node).filter(fromSourceCodeComment);
+      const comments = context
+        .getSourceCode()
+        .getCommentsInside(node)
+        .filter(fromSourceCodeComment);
 
       comments.some((comment, index) => {
         const nextComment = comments[index + 1];
         const correctCommentSuccessors = getSuccessors(comment, comments);
-        const nextTestComment = fromSourceCodeComment(nextComment) ?? TestComments.TEST_END;
+        const nextTestComment =
+          fromSourceCodeComment(nextComment) ?? TestComments.TEST_END;
 
         if (!correctCommentSuccessors.includes(nextTestComment)) {
           context.report({
-            node: nextTestComment === TestComments.TEST_END ? comment : nextComment,
+            node:
+              nextTestComment === TestComments.TEST_END ? comment : nextComment,
             messageId: getMessageId(correctCommentSuccessors),
             data: {
               wrongType: nextTestComment,
@@ -143,7 +158,8 @@ export const testCommentsRule = createRule<[], Messages>({
 
     return {
       'CallExpression[callee.name=/(^it$|^test$)/]': checkCommentsOrder, // basic 'it' and 'test' cases
-      'CallExpression[callee.tag.object.name=/(^it$|^test$)/]': checkCommentsOrder, // 'it.each' and 'test.each'
+      'CallExpression[callee.tag.object.name=/(^it$|^test$)/]':
+        checkCommentsOrder, // 'it.each' and 'test.each'
     };
   },
 });
