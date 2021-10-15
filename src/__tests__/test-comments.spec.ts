@@ -146,6 +146,15 @@ const valid = [
   {
     code: `
     it('test', () => {
+        // given something 
+        // when something else 
+        // then something 
+    });
+    `,
+  },
+  {
+    code: `
+    it('test', () => {
         // given
         const tab = tab;
         // expect
