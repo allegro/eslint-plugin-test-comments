@@ -1,6 +1,6 @@
 # eslint-plugin-test-comments
 
-Enforces BDD style comments (given/when/then) in your JavaScript tests! Rule is inspired by [Spock framework](https://spockframework.org/).
+Enforces BDD style comments (given/when/then) in your JavaScript tests! Rule is inspired by [Spock framework](https://spockframework.org/spock/docs/2.0/all_in_one.html#_blocks).
 
 # Installation
 with npm:
