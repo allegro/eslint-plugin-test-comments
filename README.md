@@ -1,6 +1,25 @@
 # eslint-plugin-test-comments
 
-Enforces BDD style comments in your JavaScript tests! (given/when/then). Rule is inspired by [Spock framework](https://spockframework.org/).
+Enforces BDD style comments (given/when/then) in your JavaScript tests! Rule is inspired by [Spock framework](https://spockframework.org/).
+
+# Installation
+with npm:
+```
+npm i -D eslint-plugin-test-comments
+```
+or yarn:
+```
+yarn add -D eslint-plugin-test-comments
+```
+
+## Configuration
+Use our preset to get reasonable defaults:
+```json
+"extends": [
+  "eslint:recommended",
+  "plugin:test-comments/recommended"
+]
+```
 
 ## Options
 
@@ -67,7 +86,3 @@ Examples of **correct** code with `allowNoComments` option.
 ```ts
 it('test', () => {});
 ```
-
-## When Not To Use It
-
-If you don't want to use BDD conventions in your tests
