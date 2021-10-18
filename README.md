@@ -13,12 +13,13 @@ yarn add -D eslint-plugin-test-comments
 ```
 
 ## Configuration
-Use our preset to get reasonable defaults:
 ```json
-"extends": [
-  "eslint:recommended",
-  "plugin:test-comments/recommended"
-]
+"plugins": [
+  "test-comments"
+],
+"rules": {
+  "test-comments/test-comments": "error"
+}
 ```
 
 ## Options
